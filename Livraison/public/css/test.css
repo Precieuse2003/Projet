@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+.header-main {
+    padding: 20px 0;
+    border-bottom: 1px solid #fff;
+    position: fixed;
+    top: 0;
+    
+  }
+  
+  .header-logo { margin-bottom: 20px; 
+   text-decoration: none;}
+  
+  .header-logo h1{ 
+    color: black;
+    font-weight: 500;
+  }
+  
+  .header-search-container { position: relative; }
+  
+  .header-search-container .search-field {
+    font-size: 15px;
+    color: #fff;
+    padding: 10px 15px;
+    padding-right: 50px;
+    border: 1px solid #fff;
+    -webkit-border-radius: 10px;
+            border-radius: 15px;
+  }
+  
+  .search-field::-webkit-search-cancel-button { display: none; }
+  
+  .search-btn {
+    background: #fff;
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+    color: var(--onyx);
+    font-size: 18px;
+    padding: 8px 15px;
+    -webkit-border-radius: 10px;
+            border-radius: 10px;
+    -webkit-transition: color whitesmoke;
+    -o-transition: color whitesmoke;
+    transition: color whitesmoke;
+  }
+  
+  .search-btn:hover { color: rgb(238, 93, 93); }
+  
+
+.gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.gallery-item {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    max-width: 200px;
+    margin: 0 10px;
+    overflow: auto hidden;
+}
+
+.gallery-item h3 {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+    text-align: center;
+    color: var(--eerie black);
+}
+.gallery-item h3:hover{
+    color: var(--bittersweet);
+    cursor: pointer;
+}
+
+.gallery-item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.gallery-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.gallery-item p {
+    margin: 10px 0 0;
+    font-size: 1.0em;
+    font-weight: bold;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .gallery {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gallery-item {
+        max-width: 100%;
+        margin: 10px 0;
+    }
+}
