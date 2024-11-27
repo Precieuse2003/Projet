@@ -86,3 +86,21 @@
 
 
 @endsection
+ 
+<!-- <div class="gallery">
+    @if(isset($supermarches) && $supermarches->isNotEmpty())
+    <ul>
+        @foreach($supermarches as $supermarche)
+            <div class="gallery-item">
+                <h3>{{ $supermarche->nom_sup }}</h3>
+                <a href="{{ route('client.article', $supermarche->id) }}">
+                    <img src="{{ asset('assets/images/' . $supermarche->image_sup) }}" >
+                </a>
+                <p>{{ $supermarche->adresse_sup }}</p>
+            </div>
+        @endforeach
+    </ul>
+    @else
+        <p>Aucun supermarché trouvé.</p>
+    @endif
+</div> -->
