@@ -24,18 +24,20 @@
                 <td>Catégorie</td>
                 <td>Prix</td>
                 <td>En stock</td>
+                <td>Supermarché</td>
                 <td>Action</td>
              </tr>
             </thead>
-            <tbody>
+            <tbody >
                 @foreach ($produits as $produit)
                     <tr>
-                     <th><img src="{{ Storage::url($produit->image) }}" alt="{{ $produit->nom }}" style="width: 150px; height: 150px;"></th>
+                     <th><img src="{{ asset('storage/images/' . $produit->image) }}"  alt="{{ $produit->nom }}" style="width: 150px; height: 150px;"></th>
                      <th> {{$produit->nom}} </th>
                      <th> {{$produit->description}} </th>
                      <th>{{$produit->categorie ? $produit->categorie->nom : "RAS"}}</th>
                      <th> {{$produit->prix}} </th>
                      <th> {{$produit->en_stock}} </th>
+                     <th> {{$produit->supermarche ? $produit->supermarche->nom_sup : "RAS"}} </th>
                      <th>
                         <a href="{{ route('produit.edit',['produit' => $produit->id]) }}" class="btn btn-primary" title="Modifier">
                           <i class="fas fa-edit"></i>

@@ -106,46 +106,6 @@
 
     </div>
 
-    <nav class="desktop-navigation-menu">
-
-      <div class="container">
-
-        <ul class="desktop-menu-category-list">
-
-          <li class="menu-category">
-            <a href="{{route('dashboard')}}" class="menu-title">Accueil</a>
-          </li>
-
-          <li class="menu-category">
-            <a href="{{route('sup.index')}}" class="menu-title">Supermarché</a>
-          </li>
-
-          <li class="menu-category">
-            <a href="{{route('client.article')}}" class="menu-title">Produit</a>
-
-            <ul class="dropdown-list">
-
-              <li class="dropdown-item">
-                <a href="#">Alimentaire</a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#">Laitier</a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#">Soins Corporelle</a>
-              </li>
-              <li class="dropdown-item">
-                <a href="#">Surgelé</a>
-              </li>
-            </ul>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </nav>
-
     <div class="mobile-bottom-navigation">
 
       <button class="action-btn" data-mobile-menu-open-btn>

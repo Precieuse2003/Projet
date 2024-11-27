@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Supermarche;
+use App\Models\Categorie;
 
 class SupermarcheController extends Controller
 {
@@ -15,6 +16,25 @@ class SupermarcheController extends Controller
         $supermarches = Supermarche::all();
         return view('supermarche.index', compact('supermarches'));
     }
+
+    public function afficherGalerie()
+{
+    $supermarches = Supermarche::all();
+    return view('client.sup', compact('supermarches'));
+}
+    public function afficherProduits($id)
+    {
+        $supermarche = Supermarche::with('produits')->findOrFail($id);
+
+        $categories = Categorie::all();
+        $productsByCategory = [];
+        foreach ($categories as $categorie) {
+            $productsByCategory[$categorie->id] = $supermarche->produits->where('categorie_id', $categorie->id);
+        }
+        return view('client.article', compact('supermarche', 'categories', 'productsByCategory'));
+    }
+
+
     /**
      * Montrer le formulaire pour créer une nouvelle ressource.
      */

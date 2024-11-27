@@ -47,6 +47,13 @@
                             <div class="text-danger" style="font-size: 14px;">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <select name="supermarche_id" id="supermarche" class="form-control" required>
+                                @foreach ($supermarches as $supermarche)
+                                <option value="{{ $supermarche->id }}">{{ $supermarche->nom_sup }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary px-4">Créer</button>
                         </div>

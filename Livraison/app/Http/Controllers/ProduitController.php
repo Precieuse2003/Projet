@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use App\Models\Supermarche;
 use Illuminate\Http\Request;
 use App\Models\Produit;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,8 @@ class ProduitController extends Controller
     public function create()
     {
         $categories = Categorie::all();
-        return view('produit.create', compact('categories'));
+        $supermarches = Supermarche::all();
+        return view('produit.create', compact('categories','supermarches'));
     }
 
     /**
@@ -62,18 +64,20 @@ class ProduitController extends Controller
             'prix' => ['required', 'numeric'],
             'en_stock'=>['required', 'numeric'],
             'categorie_id' => ['required', 'exists:categories,id'],
+            'supermarche_id' => ['required', 'exists:supermarches,id'],
         ]);
-        $filename = time().'.'.$request->image->extension();
-        $path = $request->image->storeAs($filename, 'public');
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imagePath = $image->storeAs('image', $imageName, 'public');
 
         Produit::create([
-            'image' => $path,
+            'image' => $imageName,
             'nom' => $request->nom,
             'description' => $request->description,
             'prix' => $request->prix,
             'en_stock'=> $request->en_stock,
             'categorie_id' => $request->categorie_id,
-            'supermarche_id' => Auth::user()->supermarche_id,
+            'supermarche_id' => $request->supermarche_id,
 
         ]);
 

@@ -26,6 +26,9 @@
                          <p class="form-control">En stock: {{$produit->en_stock}}</p>
                         </div>
                         <div class="mb-3">
+                         <p class="form-control">En stock: {{$produit->supermarche->nom_sup}}</p>
+                        </div>
+                        <div class="mb-3">
                             <img src="{{ asset('storage/'.$produit->image) }}" class="form-control" alt="{{ $produit->nom }}" style="width: 150px; height: 150px;">
                            </div>
                 </div>

@@ -51,6 +51,16 @@
                         <p>{{$message}}</p>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                     <select name="supermarche_id" id="supermarche" class="form-control">
+                         @foreach ($supermarhes as $supermarche)
+                         <option value="{{$supermarche->id}}">{{$supermarche->nom}}</option>
+                         @endforeach
+                     </select>
+                     @error('supermarche')
+                     <p>{{$message}}</p>
+                     @enderror
+                    </div>
                     <div class="text-center">
                        <button type="submit" class="btn btn-primary px-4">Modifier</button>
                     </div>
