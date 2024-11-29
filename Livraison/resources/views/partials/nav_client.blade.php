@@ -95,7 +95,7 @@
             <span class="count">0</span>
           </button>
 
-          <button class="action-btn">
+          <button class="action-btn" id="viewCartButton">
             <ion-icon name="bag-handle-outline"></ion-icon>
             <span class="count">0</span>
           </button>
