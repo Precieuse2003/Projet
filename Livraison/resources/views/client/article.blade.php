@@ -57,132 +57,184 @@
                 </div>
             </div>
         </div>
-        <div id="modal" class="modal">
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <h2 id="modal-product-name"></h2>
-              <p id="modal-product-description"></p>
-              <p>Prix : <span id="modal-product-price"></span>Fcfa</p>
-              <input id="modal-quantity" type="number" min="1" value="1">
-              <button id="modal-btn-add">Ajouter au panier</button>
-            </div>
-          </div>
+<!-- Modal -->
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-body">
+            <img id="modalImage" src="" alt="Produit" class="modal-image">
+            <p id="modalName"></p>
+            <p id="modalDescription"></p>
+            <p id="modalPrice"></p>
+            <label for="modalQuantity">Quantité :</label>
+            <input type="number" id="modalQuantity" min="1" value="1" class="quantity-input">
+            <button id="confirmAddToCart" class="btn-confirm">Ajouter au Panier</button>
+        </div>
+    </div>
+</div>
 
-          <div class="cart">
-            <h1>Mon panier</h1>
-            <ul id="cart-items"></ul>
-            <p id="total-price">Total : 0Fcfa</p>
-          </div>
+<style>
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
 
-          <style>
-            /* Modal */
-            .modal {
-              display: none; /* Caché par défaut */
-              position: fixed;
-              z-index: 1000;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              background-color: rgba(0, 0, 0, 0.5);
-            }
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
 
-            .modal-content {
-              background-color: white;
-              margin: 15% auto;
-              padding: 20px;
-              width: 80%;
-              max-width: 400px;
-              border-radius: 5px;
-              text-align: center;
-            }
+.close {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-            .close {
-              color: #aaa;
-              float: right;
-              font-size: 28px;
-              cursor: pointer;
-            }
-            </style>
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.modal-body p {
+    margin: 10px 0;
+}
+
+.btn-confirm {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-confirm:hover {
+    background-color: #218838;
+}
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+</style>
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-// document.getElementById("modal").style.display = "block";
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.btn-add');
+    const modal = document.getElementById('cartModal');
+    const closeModal = modal.querySelector('.close');
+    const modalImage = document.getElementById('modalImage');
+    const modalName = document.getElementById('modalName');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalQuantity = document.getElementById('modalQuantity');
+    const confirmAddToCart = document.getElementById('confirmAddToCart');
 
-let cart = [];
+    let selectedProduct = {};
 
-// Sélection des éléments du modal
-const modal = document.getElementById("modal");
-const modalProductName = document.getElementById("modal-product-name");
-const modalProductDescription = document.getElementById("modal-product-description");
-const modalProductPrice = document.getElementById("modal-product-price");
-const modalQuantity = document.getElementById("modal-quantity");
-const modalAddToCart = document.getElementById("modal-btn-add");
+    // Initialiser le panier dans le localStorage
+    const getCart = () => JSON.parse(localStorage.getItem('cart')) || [];
+    const saveCart = (cart) => localStorage.setItem('cart', JSON.stringify(cart));
 
-document.querySelector(".close").addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-// Fonction pour mettre à jour l'affichage du panier
-function updateCart() {
-  const cartItems = document.getElementById("cart-items");
-  const totalPrice = document.getElementById("total-price");
-
-  cartItems.innerHTML = ""; // Réinitialiser les articles
-  let total = 0;
-
-  cart.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} : ${item.price}Fcfa x ${item.quantity}`;
-    cartItems.appendChild(li);
-    total += item.price * item.quantity;
-  });
-
-  totalPrice.textContent = `Total : ${total}Fcfa`;
-}
-
-// Fonction pour afficher le modal avec les infos du produit
-function openModal(product) {
-  modalProductName.textContent = product.name;
-  modalProductDescription.textContent = product.description;
-  modalProductPrice.textContent = product.price;
-  modalQuantity.value = 1; // Réinitialiser la quantité
-  modal.style.display = "block";
-
-  modalAddToCart.onclick = () => {
-    const quantity = parseInt(modalQuantity.value, 10);
-    btnAdd({ ...product, quantity });
-    modal.style.display = "none";
-  };
-}
-
-// Fonction pour ajouter un produit au panier
-function btnAdd(product) {
-  const existingProduct = cart.find(item => item.id === product.id);
-  if (existingProduct) {
-    existingProduct.quantity += product.quantity;
-  } else {
-    cart.push(product);
-  }
-  updateCart();
-}
-
-// Ajout d'un écouteur sur les boutons "Ajouter au panier"
-document.querySelectorAll(".btn-add").forEach(button => {
-  button.addEventListener("click", event => {
-    const button = event.currentTarget;
-
-    const product = {
-      id: button.dataset.id,
-      name: button.dataset.name,
-      price: parseFloat(button.dataset.price),
-      description: button.dataset.description,
-      image: button.dataset.image,
+    //mettre à jour le compteur
+    const updateCartCount = () => {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
     };
-    // console.log("Produit cliqué :", product); // Vérifiez les données du produit
-    openModal(product);
-  });
+
+    // Charger le compteur au démarrage
+    updateCartCount();
+
+    // Ouvrir le modal
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            selectedProduct = {
+                id: button.dataset.id,
+                name: button.dataset.name,
+                price: button.dataset.price,
+                description: button.dataset.description,
+                image: button.dataset.image
+            };
+
+            modalImage.src = selectedProduct.image;
+            modalName.textContent = `Nom : ${selectedProduct.name}`;
+            modalDescription.textContent = `Description : ${selectedProduct.description}`;
+            modalPrice.textContent = `Prix : ${selectedProduct.price} Fcfa`;
+            modalQuantity.value = 1; // Réinitialiser la quantité
+            modal.style.display = 'flex';
+        });
+    });
+
+    // Ajouter au panier
+    confirmAddToCart.addEventListener('click', function () {
+        const quantity = parseInt(modalQuantity.value, 10);
+
+        if (quantity < 1) {
+            alert('Veuillez entrer une quantité valide.');
+            return;
+        }
+
+        // Récupérer le panier existant
+        let cart = getCart();
+
+        // Vérifier si le produit existe déjà dans le panier
+        const existingProductIndex = cart.findIndex(item => item.id === selectedProduct.id);
+
+        if (existingProductIndex !== -1) {
+            // Mettre à jour la quantité du produit existant
+            cart[existingProductIndex].quantity += quantity;
+        } else {
+            // Ajouter le nouveau produit au panier
+            cart.push({
+                id: selectedProduct.id,
+                name: selectedProduct.name,
+                price: selectedProduct.price,
+                description: selectedProduct.description,
+                image: selectedProduct.image,
+                quantity: quantity
+            });
+        }
+
+        // Sauvegarder le panier dans le localStorage
+        saveCart(cart);
+
+        alert(`${quantity} ${selectedProduct.name} ajouté(s) au panier !`);
+        modal.style.display = 'none';
+    });
+
+    // Fermer le modal
+    closeModal.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    // Fermer le modal en cliquant en dehors
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 });
-});
+
 //favoris
 
 document.addEventListener('DOMContentLoaded', () => {

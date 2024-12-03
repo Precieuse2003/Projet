@@ -92,29 +92,29 @@
                 </ul>
             </div>
         </div>
-
-{{--
-          <a href="{{route('panier.index')}}" class="action-btn">
-            <ion-icon name="bag-handle-outline"></ion-icon>
-            <span class="count">0</span>
-          </a> --}}
-
-          <!-- Lien pour afficher le panier -->
+<!-- Bouton pour afficher le panier -->
 <a href="#" class="action-btn" id="afficher-panier">
     <ion-icon name="cart-outline"></ion-icon>
-    <span class="count">0</span>
+    <span id="panierCount" class="count">0</span>
 </a>
 
-<!-- Modal pour afficher la liste du panier -->
-<div id="panier-modal" class="modal" style="display: none;">
+<!-- Modal du panier -->
+<div id="cartDisplayModal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" id="close-panier-modal">&times;</span>
-        <h2>Liste du panier</h2>
-        <ul id="panier-list">
-            <!-- Liste des produits dans le panier -->
-        </ul>
+        <span class="close">&times;</span>
+        <h2>Votre panier</h2>
+        <div class="cart-items"></div>
+        <div class="cart-total">
+            <p>Total : <span id="cartTotal">0</span> Fcfa</p>
+        </div>
+        <div class="cart-actions">
+            <a href="{{route('panier.create')}}" id="validateCart" class="btn-validate">Commander</a>
+        </div>
     </div>
 </div>
+
+
+
 
         </div>
 
@@ -199,7 +199,7 @@
 }
 
 .modal-footer .btn-danger {
-    background-color: #dc3545;
+    background-color: red;
   font-size: 1.2rem; /* Augmente la taille du bouton */
   padding: 10px 20px; /* Ajoute de l'espace dans le bouton */
 }
@@ -274,70 +274,102 @@
 /*panier*/
 /* Modal - Fond sombre */
 .modal {
-    display: none; /* Initialement masqué */
+    display: none;
     position: fixed;
-    z-index: 1; /* Modal au-dessus des autres éléments */
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Fond sombre */
-    overflow: auto; /* Permet de défiler si nécessaire */
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-/* Contenu du modal */
 .modal-content {
-    background-color: white;
-    margin: 15% auto;
+    background: white;
+    border-radius: 8px;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Bouton de fermeture */
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
     cursor: pointer;
 }
 
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.cart-items {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
 }
 
-/* Liste des produits dans le panier */
-#panier-list {
-    list-style-type: none;
-    padding: 0;
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-#panier-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    font-size: 16px;
-}
-
-#panier-list li button {
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 5px 10px;
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
     border-radius: 5px;
 }
 
-#panier-list li button:hover {
-    background-color: darkred;
+.cart-item-info {
+    flex: 1;
+    margin-left: 10px;
 }
+
+.cart-actions {
+    text-align: center;
+}
+.cart-total {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+    color: #333;
+}
+
+.btn-validate {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.btn-validate:hover {
+    background-color: #45a049;
+}
+
+.btn-remove {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-remove:hover {
+    background-color: #e41f1f;
+}
+
 </style>
     <script>
+        //profil
      document.querySelector('.action-btn').addEventListener('click', () => {
   document.getElementById('profileModal').classList.add('show');
 });
@@ -429,97 +461,101 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //panier
+document.addEventListener('DOMContentLoaded', function () {
+    const cartModal = document.getElementById('cartDisplayModal');
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartCount = document.getElementById('panierCount');
+    const afficherPanier = document.getElementById('afficher-panier');
+    const closeCartModal = cartModal.querySelector('.close');
 
-document.addEventListener('DOMContentLoaded', () => {
-    const panierCountElement = document.querySelector('.count');
-    const panierList = document.querySelector('#panier-list');
-    const afficherPanierButton = document.querySelector('#afficher-panier');
-    const panierModal = document.querySelector('#panier-modal');
-    const closePanierModalButton = document.querySelector('#close-panier-modal');
+    // Récupérer et enregistrer le panier depuis/vers localStorage
+    const getCart = () => JSON.parse(localStorage.getItem('cart')) || [];
+    const saveCart = (cart) => localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Fonction pour mettre à jour le compteur du panier
-    function updatePanierCount() {
-        const panier = JSON.parse(localStorage.getItem('panier')) || [];
-        panierCountElement.textContent = panier.length;
-    }
+    // Mettre à jour le compteur
+    const updateCartCount = () => {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+    };
 
-    // Afficher la liste des produits dans le panier
-    afficherPanierButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Empêcher le comportement par défaut du lien
-        afficherPanier(); // Charger les produits du panier
-        panierModal.style.display = "block"; // Afficher le modal
-    });
+    // Calculer le total
+    const calculateTotal = () => {
+        const cart = getCart();
+        const total = cart.reduce((sum, item) => sum + item.quantity * item.price, 0);
+        cartTotal.textContent = total;
+    };
 
-    // Récupérer et afficher tous les produits du panier depuis le localStorage
-    function afficherPanier() {
-        const panier = JSON.parse(localStorage.getItem('panier')) || [];
-        panierList.innerHTML = ''; // Vider la liste
-        if (panier.length > 0) {
-            panier.forEach(produit => {
-                panierList.innerHTML += `
-                    <li>
-                        ${produit.nom}
-                        <button class="remove-panier" data-produit-id="${produit.id}">Supprimer</button>
-                    </li>
-                `;
-            });
+    // Afficher les produits du panier
+    const displayCartItems = () => {
+        const cart = getCart();
+        cartItemsContainer.innerHTML = '';
 
-            // Ajouter un gestionnaire d'événements pour supprimer un produit du panier
-            document.querySelectorAll('.remove-panier').forEach(button => {
-                button.addEventListener('click', function () {
-                    const produitId = this.dataset.produitId;
-                    supprimerPanier(produitId);
-                });
-            });
-        } else {
-            panierList.innerHTML = '<li>Aucun produit dans le panier.</li>';
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p>Votre panier est vide.</p>';
+            cartTotal.textContent = '0';
+            return;
         }
-    }
 
-    // Supprimer un produit du panier
-    function supprimerPanier(produitId) {
-        const panier = JSON.parse(localStorage.getItem('panier')) || [];
-        const nouveauxPanier = panier.filter(produit => produit.id !== produitId);
-        localStorage.setItem('panier', JSON.stringify(nouveauxPanier));
+        cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <div class="cart-item-info">
+                    <p>${item.name}</p>
+                    <p>${item.quantity} x ${item.price} Fcfa</p>
+                </div>
+                <button class="btn-remove" data-id="${item.id}">Supprimer</button>
+            `;
+            cartItemsContainer.appendChild(cartItem);
 
-        // Mettre à jour la liste et le compteur
-        updatePanierCount();
-        afficherPanier();
-    }
-
-    // Ajouter un produit au panier
-    const ajouterPanierButtons = document.querySelectorAll('.btn-panier');
-    ajouterPanierButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const produitId = e.target.dataset.produitId;
-            const produitNom = e.target.dataset.produitNom;
-
-            // Ajouter le produit au panier dans le localStorage
-            const panier = JSON.parse(localStorage.getItem('panier')) || [];
-            panier.push({ id: produitId, nom: produitNom });
-            localStorage.setItem('panier', JSON.stringify(panier));
-
-            // Mettre à jour le compteur du panier
-            updatePanierCount();
-            alert('Produit ajouté au panier !');
+            // Ajouter l'événement pour supprimer
+            cartItem.querySelector('.btn-remove').addEventListener('click', function () {
+                removeCartItem(item.id);
+            });
         });
+
+        // Mettre à jour le total
+        calculateTotal();
+    };
+
+    // Supprimer un produit du panier avec confirmation
+    const removeCartItem = (id) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce produit du panier ?")) {
+        let cart = getCart();
+        cart = cart.filter(item => item.id !== id);
+        saveCart(cart);
+        updateCartCount();
+        displayCartItems();
+    }
+};
+
+
+    // Ouvrir le modal
+    afficherPanier.addEventListener('click', function (e) {
+        e.preventDefault();
+        displayCartItems();
+        cartModal.style.display = 'flex';
     });
 
-    // Fermer le modal du panier
-    closePanierModalButton.addEventListener('click', () => {
-        panierModal.style.display = "none"; // Masquer le modal
+    // Fermer le modal
+    closeCartModal.addEventListener('click', function () {
+        cartModal.style.display = 'none';
     });
 
-    // Fermer le modal si l'utilisateur clique à l'extérieur du modal
-    window.addEventListener('click', (e) => {
-        if (e.target === panierModal) {
-            panierModal.style.display = "none";
+    // Fermer en cliquant en dehors
+    window.addEventListener('click', function (event) {
+        if (event.target === cartModal) {
+            cartModal.style.display = 'none';
         }
     });
 
-    // Initialiser le compteur du panier au chargement
-    updatePanierCount();
+    // Mettre à jour le compteur au chargement
+    updateCartCount();
 });
+
 </script>
 
   </header>
