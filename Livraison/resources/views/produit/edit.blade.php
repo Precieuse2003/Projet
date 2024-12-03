@@ -53,8 +53,8 @@
                     </div>
                     <div class="mb-3">
                      <select name="supermarche_id" id="supermarche" class="form-control">
-                         @foreach ($supermarhes as $supermarche)
-                         <option value="{{$supermarche->id}}">{{$supermarche->nom}}</option>
+                         @foreach ($supermarches as $supermarche)
+                         <option value="{{$supermarche->id}}">{{$supermarche->nom_sup}}</option>
                          @endforeach
                      </select>
                      @error('supermarche')

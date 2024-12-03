@@ -31,7 +31,7 @@
             <tbody >
                 @foreach ($produits as $produit)
                     <tr>
-                     <th><img src="{{ asset('storage/images/' . $produit->image) }}"  alt="{{ $produit->nom }}" style="width: 150px; height: 150px;"></th>
+                     <th><img src="{{ asset('storage/' . $produit->image) }}"  alt="{{ $produit->nom }}" style="width: 150px; height: 150px;"></th>
                      <th> {{$produit->nom}} </th>
                      <th> {{$produit->description}} </th>
                      <th>{{$produit->categorie ? $produit->categorie->nom : "RAS"}}</th>

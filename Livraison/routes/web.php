@@ -41,6 +41,7 @@ Route::resource('client', ClientController::class);
 Route::resource('sup', SupController::class);
 Route::resource('role', RoleController::class);
 Route::get('/client-side', [ProduitController::class, 'clientSide'])->name('client.article');
+Route::get('/detail/produit/{id}', [ProduitController::class, 'detail'])->name('produit.detail');
 Route::get('/images', [App\Http\Controllers\ImageController::class, 'index']);
 Route::delete('/panier/{id}', [PanierController::class, 'remove'])->name('panier.remove');
 Route::delete('/panier/empty', [PanierController::class, 'empty'])->name('panier.empty');
@@ -50,7 +51,14 @@ Route::get('/panier/show', [PanierController::class, 'showCart'])->name('panier.
 
 Route::get('/sup', [SupermarcheController::class, 'afficherGalerie'])->name('client.sup');
 // Route::get('/supermarche/{id}/produit', [SupermarcheController::class, 'afficherProduits'])->name('client.article');
+Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
 
+Route::prefix('/favoris')->group(function () {
+    Route::post('/ajouter', [FavorisController::class, 'ajouterAuxFavoris'])->name('favoris.ajouter');
+    Route::get('/afficher', [FavorisController::class, 'getFavoris'])->name('favoris.afficher');
+    Route::delete('/supprimer', [FavorisController::class, 'supprimerFavoris'])->name('favoris.supprimer');
+    Route::get('/count', [FavorisController::class, 'nombreFavoris'])->name('favoris.count');
+});
 
 
 

@@ -15,36 +15,6 @@ class PanierController extends Controller
     return view('panier.index', ['Cartitems' => $items]);
 }
 
-// public function create(Request $request)
-//  {
-//     // Affiche un formulaire d'ajout au panier
-//     $produitId = $request -> input('produit_id');
-//     $quantite_produit = $request -> input('quantite_produit', 1);
-
-//   $panier = session()->get('panier', []);
-//   $produit = Produit::find($produitId);
-
-//   if (!$produit){
-//       return response()->json(['message'=> 'Produit non trouvé'], 404);
-//   }
-//   if (isset($panier[$produitId])){
-//     $panier[$produitId]['quantite'] += $quantite;
-//     $panier[$produitId]['total'] = $panier[$produitId]['quantite'] * $produit->prix;
-//   } else{
-
-//     $panier[$produitId] = [
-//          'nom' => $produit -> nom,
-//          'prix' => $produit -> prix,
-//          'quantite_produit' => $produit -> quantite_produit,
-//          'tatal' => $produit-> prix * $quantite
-//     ];
-//   }
-//   session()->put('panier', $panier);
-
-//   return response()->json(['message' => 'Produit ajoute au panier', 'panier => $panier',]);
-
-// }
-
 public function create($id)
 {
     $produit = Produit::get($id);

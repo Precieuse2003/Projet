@@ -38,7 +38,7 @@
                     @error('image')
                     <p>{{message}}</p>
                     @enderror
-                    </div>4
+                    </div>
                     <div class="text-center">
                             <button type="submit" class="btn btn-primary">Modifier</button>
                         </div>

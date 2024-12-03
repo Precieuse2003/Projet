@@ -66,12 +66,10 @@ class ProduitController extends Controller
             'categorie_id' => ['required', 'exists:categories,id'],
             'supermarche_id' => ['required', 'exists:supermarches,id'],
         ]);
-        $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $imagePath = $image->storeAs('image', $imageName, 'public');
+        $imagePath = $request->file('image')->store('images', 'public');
 
         Produit::create([
-            'image' => $imageName,
+            'image' => $imagePath,
             'nom' => $request->nom,
             'description' => $request->description,
             'prix' => $request->prix,
@@ -93,6 +91,16 @@ class ProduitController extends Controller
 
         return view('produit.show', compact('produit'));
     }
+    public function detail($id)
+{
+    $produit = Produit::find($id);
+
+    if (!$produit) {
+        return redirect()->route('produit.index')->with('error', 'Produit non trouvé');
+    }
+    return view('produit.detail', compact('produit'));
+}
+
 
     /**
      * Montrer le formulaire pour éditer la ressource spécifiée.
@@ -100,7 +108,8 @@ class ProduitController extends Controller
     public function edit(Produit $produit)
     {
         $categories = Categorie::all();
-        return view('produit.edit', compact('produit', 'categories'));
+        $supermarches = Supermarche::all();
+        return view('produit.edit', compact('produit', 'categories', 'supermarches'));
     }
 
     /**
@@ -115,6 +124,7 @@ class ProduitController extends Controller
             'prix' => ['required', 'numeric'],
             'en_stock'=>['required', 'numeric'],
             'categorie_id' => ['required', 'exists:categories,id'],
+            'supermarche_id' => ['required', 'exists:supermarches,id'],
         ]);
 
         if ($request->hasFile('image')) {
@@ -128,7 +138,7 @@ class ProduitController extends Controller
             'prix' => $request->prix,
             'en_stock'=> $request->en_stock,
             'categorie_id' => $request->categorie_id,
-            'supermarche_id' => Auth::user()->supermarche_id,
+            'supermarche_id' => $request->supermarche_id,
         ]);
 
         return redirect()->route('produit.index')->with('success', 'Produit modifié avec succès');
