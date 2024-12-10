@@ -14,6 +14,26 @@ class PanierController extends Controller
     $items = Cart::getContent();
     return view('panier.index', ['Cartitems' => $items]);
 }
+    public function saveCart(Request $request)
+    {
+        // Valider les données envoyées
+        $validatedData = $request->validate([
+            'items' => 'required|array',
+            'items.*.id' => 'required|integer',
+            'items.*.quantity' => 'required|integer|min:1',
+        ]);
+
+        // Parcourir les items et les enregistrer dans la base de données
+        foreach ($validatedData['items'] as $item) {
+            CartItem::create([
+                'produit_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'user_id' => auth()->id(), // Assurez-vous que l'utilisateur est connecté
+            ]);
+        }
+
+        return response()->json(['message' => 'Panier enregistré avec succès !']);
+    }
 
 public function create($id)
 {

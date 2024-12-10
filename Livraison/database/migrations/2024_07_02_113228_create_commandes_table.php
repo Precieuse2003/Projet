@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
-            $table->string('statut_commande');
-            $table->string('historique_commande');
+            $table->string('destination');
             $table->foreignId('produit_id')->constrained()->onDelete('cascade');
-            $table->foreignId('panier_id')->constrained()->onDelete('cascade');
             $table->foreignId('livraison_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

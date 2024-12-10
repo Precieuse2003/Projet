@@ -95,7 +95,7 @@
 <!-- Bouton pour afficher le panier -->
 <a href="#" class="action-btn" id="afficher-panier">
     <ion-icon name="cart-outline"></ion-icon>
-    <span id="panierCount" class="count">0</span>
+    <span id="cartCount" class="count">0</span>
 </a>
 
 <!-- Modal du panier -->

@@ -62,6 +62,9 @@ Route::prefix('/favoris')->group(function () {
 
 
 
+Route::post('/save-cart', [CartController::class, 'saveCart'])->name('saveCart');
+
+
 
 
 Route::get('/index_admin', [UserController::class, 'index_admin'])->name('user.index_admin');
